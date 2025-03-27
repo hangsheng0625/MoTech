@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isSignIn = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Tab Selector (unchanged)
+                  // Tab Selector
                   Stack(
                     children: [
                       Row(
@@ -96,63 +97,32 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      // Positioned(
-                      //   bottom: 0,
-                      //   left: isSignIn ? 0 : 60,
-                      //   child: Container(
-                      //     width: 51,
-                      //     height: 2,
-                      //     color: const Color(0xFF4318D1),
-                      //   ),
-                      // ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
-                  // Logo and Brand - Revised
+                  // Logo and Brand
                   Column(
                     children: [
-                      Stack(
-                        // Align both texts exactly on top of each other
-                        alignment: Alignment.center,
-                        children: [
-                          // 1) OUTLINE (Stroke)
-                          // Text(
-                          //   'MoTech',
-                          //   style: GoogleFonts.lobster(
-                          //     fontSize: 100,
-                          //     // Paint style for STROKE
-                          //     foreground: Paint()
-                          //       ..style = PaintingStyle.stroke
-                          //       ..strokeWidth = 16  // thickness of the outline
-                          //       ..color = const Color.fromARGB(255, 127, 215, 114), // outline color
-                          //   ),
-                          // ),
-
-                          // 2) FILL (with shadow)
-                          Text(
-                            'MoTech',
-                            style: GoogleFonts.lobster(
-                              fontSize: 60,
-                              color: const Color.fromARGB(255, 30, 129, 15), // main fill color
-                              // Add a drop shadow for a “3D” look
-                              shadows: [
-                                const Shadow(
-                                  offset: Offset(2, 2),  // how far the shadow is
-                                  blurRadius: 6,               // how soft the shadow is
-                                  color: Color.fromARGB(95, 255, 254, 254),       // shadow color
-                                ),
-                              ],
+                      Text(
+                        'MoTech',
+                        style: GoogleFonts.lobster(
+                          fontSize: 60,
+                          color: const Color.fromARGB(255, 30, 129, 15),
+                          shadows: [
+                            const Shadow(
+                              offset: Offset(2, 2),
+                              blurRadius: 6,
+                              color: Color.fromARGB(95, 255, 254, 254),
                             ),
-                          ),
-                        ],
-                      ),
-
-                      Image.asset(
-                      'assets/screen/logo.png',
-                      width: 174,
-                      height: 174,
+                          ],
                         ),
+                      ),
+                      Image.asset(
+                        'assets/screen/logo.png',
+                        width: 174,
+                        height: 174,
+                      ),
                       const SizedBox(height: 1),
                     ],
                   ),
@@ -172,17 +142,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     isPassword: true,
                   ),
 
-                  // Sign In Button
+                  // Confirm Password for Sign Up (conditionally rendered)
+                  if (!isSignIn) ...[
+                    const SizedBox(height: 24),
+                    CustomInputField(
+                      controller: _confirmPasswordController,
+                      label: 'Confirm Password',
+                      placeholder: 'Confirm your password',
+                      isPassword: true,
+                    ),
+                  ],
+
+                  // Sign In/Up Button
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 32),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FruitMultiSelectScreen(),
-                          ),
-                        );
+                        if (isSignIn) {
+                          // Navigate to HomeScreen when Sign In is clicked
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        } else {
+                          // Navigate to FruitMultiSelectScreen when Sign Up is clicked
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FruitMultiSelectScreen(),
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1A612D),
@@ -192,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: Text(
-                        'Sign In',
+                        isSignIn ? 'Sign In' : 'Sign Up',
                         style: GoogleFonts.inter(
                           fontSize: 21,
                           fontWeight: FontWeight.w500,
