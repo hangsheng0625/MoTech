@@ -7,7 +7,6 @@
 2. **Neo Zheng weng:** Flutter developer, Business developer
 
 
-
 # MoTech Malaysia 🌱  
 **Empowering Farmers with AI, IoT, and Gamified Sustainability**  
 
