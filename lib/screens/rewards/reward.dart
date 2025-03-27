@@ -314,7 +314,7 @@ final List<Voucher> vouchers = [
     pointsRequired: 200,
   ),
   Voucher(
-    name: 'Equipment Rental Deal',
+    name: 'Equipment Special Offer',
     discount: 25,
     expiryDate: '2025-01-15',
     pointsRequired: 350,
