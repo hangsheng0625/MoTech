@@ -47,20 +47,6 @@ class WelcomeScreen extends StatelessWidget {
                         // Align both texts exactly on top of each other
                         alignment: Alignment.center,
                         children: [
-                          // 1) OUTLINE (Stroke)
-                          // Text(
-                          //   'MoTech',
-                          //   style: GoogleFonts.lobster(
-                          //     fontSize: 100,
-                          //     // Paint style for STROKE
-                          //     foreground: Paint()
-                          //       ..style = PaintingStyle.stroke
-                          //       ..strokeWidth = 16  // thickness of the outline
-                          //       ..color = const Color.fromARGB(255, 127, 215, 114), // outline color
-                          //   ),
-                          // ),
-
-                          // 2) FILL (with shadow)
                           Text(
                             'MoTech',
                             style: GoogleFonts.lobster(
@@ -122,7 +108,7 @@ class WelcomeScreen extends StatelessWidget {
                                 ? Column(
                                     children: [
                                       AuthButton(
-                                        text: 'Sign In',
+                                        text: 'Start Journey',
                                         onPressed: () {
                                           Navigator.push(
                                             context,
@@ -132,37 +118,14 @@ class WelcomeScreen extends StatelessWidget {
                                           );
                                         },
                                       ),
-                                      const SizedBox(height: 15),
-                                      AuthButton(
-                                        text: 'Register',
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => const LoginScreen()
-                                            ),
-                                          );
-                                        },
-                                      ),
+  
                                     ],
                                   )
                                 : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       AuthButton(
-                                        text: 'Sign In',
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => const LoginScreen()
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(width: 22),
-                                      AuthButton(
-                                        text: 'Register',
+                                        text: 'Start Journey',
                                         onPressed: () {
                                           Navigator.push(
                                             context,

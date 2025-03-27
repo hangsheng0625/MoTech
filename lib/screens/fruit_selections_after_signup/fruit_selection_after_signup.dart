@@ -87,8 +87,9 @@ class _FruitMultiSelectScreenState extends State<FruitMultiSelectScreen> {
                   Text(
                     'Select your fruits',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.lobster(
+                    style: GoogleFonts.nunito(
                       fontSize: 45,
+                      fontWeight: FontWeight.w900,
                       color: const Color.fromARGB(255, 49, 129, 5),
                       shadows: [
                         const Shadow(
