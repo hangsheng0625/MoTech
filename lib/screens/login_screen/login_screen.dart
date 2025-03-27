@@ -4,6 +4,7 @@ import 'package:myapp/components/navbar.dart';
 import 'custom_input_field.dart';
 import 'social_login_button.dart';
 import '../homescreen/home_screen.dart';
+import '../fruit_selections_after_signup/fruit_selection_after_signup.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
+                            builder: (context) => const FruitMultiSelectScreen(),
                           ),
                         );
                       },
