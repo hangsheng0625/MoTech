@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoanCards extends StatefulWidget {
-  const LoanCards({Key? key}) : super(key: key);
+class SpendingCards extends StatefulWidget {
+  const SpendingCards({Key? key}) : super(key: key);
 
   @override
-  _LoanCardsState createState() => _LoanCardsState();
+  _SpendingCardsState createState() => _SpendingCardsState();
 }
 
-class _LoanCardsState extends State<LoanCards> {
+class _SpendingCardsState extends State<SpendingCards> {
   // List to store editable spending items
   final List<SpendingCardItem> _spendingItems = [
     const SpendingCardItem(
-      color: Color.fromARGB(255, 243, 8, 8),
-      name: 'Mr Lim',
-      amount: 14500,
+      color: Color(0xFF4318D1),
+      name: 'Mr Tan',
+      amount: 4500,
     ),
     const SpendingCardItem(
-      color: Color.fromARGB(255, 255, 0, 0),
+      color: Color(0xFFFFB800),
       name: 'Public Bank',
       amount: 3200,
     ),
     const SpendingCardItem(
-      color: Color.fromARGB(255, 243, 8, 8),
+      color: Color(0xFF00B37E),
       name: 'Maybank',
       amount: 2800,
     ),
     const SpendingCardItem(
-      color: Color.fromARGB(255, 255, 0, 0),
+      color: Color(0xFFFF6B6B),
       name: 'Mr Chua',
       amount: 2000,
     ),

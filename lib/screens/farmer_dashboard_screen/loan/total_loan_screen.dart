@@ -13,111 +13,88 @@ class TotalLoanScreen extends StatefulWidget {
 }
 
 class _TotalLoanScreenState extends State<TotalLoanScreen> {
+  // Button styling constants
+  final _buttonStyle = ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF4B9B28),
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 640;
+    final horizontalPadding = MediaQuery.of(context).size.width > 991 ? 32.0 : 16.0;
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFFFFCD8), Color(0xFFCBEFD1)],
-            stops: [0.196, 0.451],
-          ),
-        ),
+        decoration: _buildBackgroundDecoration(),
         child: SafeArea(
           child: Column(
             children: [
-              // Custom Tab Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF4B9B28),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text(
-                            'Total Earning',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Scrollable Content
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width > 991 ? 32 : 16,
-                    vertical: 16,
-                  ),
-                  child: Column(
-                    children: [
-                      FinancialAnalysisCard(),
-                      const SizedBox(height: 24),
-                      // const CropSourcesCard(),
-                      const SizedBox(height: 24),
-                      const LoanCards(),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width > 640 ? 190 : double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const CalendarPage()),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4B9B28),
-                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: Text(
-                            'Save to Calendar',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _buildMainContent(isWideScreen, horizontalPadding),
             ],
           ),
         ),
       ),
       bottomNavigationBar: const Navbar(index: 1),
+    );
+  }
+
+  BoxDecoration _buildBackgroundDecoration() {
+    return const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFFFFFCD8), Color(0xFFCBEFD1)],
+        stops: [0.196, 0.451],
+      ),
+    );
+  }
+
+  Widget _buildMainContent(bool isWideScreen, double horizontalPadding) {
+    return Expanded(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: 16,
+        ),
+        child: Column(
+          children: [
+            FinancialAnalysisCard(),
+            const SizedBox(height: 24),
+            const SpendingCards(),
+            const SizedBox(height: 24),
+            _buildSaveToCalendarButton(isWideScreen),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSaveToCalendarButton(bool isWideScreen) {
+    return SizedBox(
+      width: isWideScreen ? 190 : double.infinity,
+      child: ElevatedButton(
+        style: _buttonStyle,
+        onPressed: () => _navigateToCalendarScreen(),
+        child: Text(
+          'Save to Calendar',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToCalendarScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CalendarPage()),
     );
   }
 }

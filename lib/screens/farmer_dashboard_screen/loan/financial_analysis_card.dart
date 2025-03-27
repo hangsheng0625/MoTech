@@ -17,7 +17,7 @@ class FinancialAnalysisCard extends StatelessWidget {
     const Color(0xFF00B37E),
     const Color(0xFFFF6B6B),
   ];
-  final List<String> _labels = ['Mr Tan', 'Public Bank', 'Maybank', 'Mr Chua'];
+  final List<String> _labels = ['Mr Tan', 'Maybank', 'Public Bank', 'Mr Chua'];
 
   void _generateRandomData() {
     _pieData.clear();
