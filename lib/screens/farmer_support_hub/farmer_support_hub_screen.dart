@@ -133,17 +133,17 @@ class _FarmingSupportScreenState extends State<FarmingSupportScreen> {
       shrinkWrap: true,
       children: const [
         ContentCard(
-          title: 'Tractor Maintenance 101',
-          description: 'Learn essential maintenance tips for your farming equipment',
+          title: 'Durian Musang King',
+          description: 'Unlock expert techniques for nurturing and harvesting premium Durian Musang King. Elevate your orchard’s yield with proven care strategies.',
           showIcon: false,
-          imagePath: 'assets/images/tractor-maintain.jpg', // Add image
+          imagePath: 'assets/images/durian-musang-king.jpg', // Add image
         ),
         SizedBox(height: 24),
         ContentCard(
-          title: 'Irrigation Systems Setup',
-          description: 'Step-by-step guide to modern irrigation installation',
+          title: 'Coconut Farming',
+          description: 'Explore our comprehensive guide to modern coconut farming with step-by-step instructions for efficient irrigation and eco-friendly practices.',
           showIcon: false,
-          imagePath: 'assets/images/irrigation.png',
+          imagePath: 'assets/images/coconut.jpg',
         ),
       ],
     );

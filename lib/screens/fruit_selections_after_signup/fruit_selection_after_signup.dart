@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../homescreen/home_screen.dart';
 import 'package:myapp/components/navbar.dart';
+import '../../theme/app_colors.dart';
 
 class FruitMultiSelectScreen extends StatefulWidget {
   const FruitMultiSelectScreen({Key? key}) : super(key: key);
@@ -71,8 +72,8 @@ class _FruitMultiSelectScreenState extends State<FruitMultiSelectScreen> {
             end: Alignment.bottomCenter,
             stops: [0.196, 0.451],
             colors: [
-              Color.fromARGB(255, 127, 215, 114),
-              Color.fromARGB(255, 30, 129, 15),
+              AppColors.gradientStart,
+              AppColors.gradientEnd,
             ],
           ),
         ),
@@ -84,11 +85,11 @@ class _FruitMultiSelectScreenState extends State<FruitMultiSelectScreen> {
                 children: [
                   const SizedBox(height: 50),
                   Text(
-                    'What Fruits\nAre You Going\nto Plant',
+                    'Select your fruits',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lobster(
                       fontSize: 45,
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 49, 129, 5),
                       shadows: [
                         const Shadow(
                           offset: Offset(2, 2),
