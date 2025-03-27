@@ -8,6 +8,7 @@ import '../farmer_dashboard_screen/farm_performance_overview.dart';
 import '../farmer_support_hub/farmer_support_hub_screen.dart';
 import '../farmer_marketplace/selling_crop/farm_financial_services_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../rewards/reward.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -162,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const FarmFinancialServicesScreen(),
+                                  builder: (context) => const RewardScreen(),
                                 ),
                               );
                             },
