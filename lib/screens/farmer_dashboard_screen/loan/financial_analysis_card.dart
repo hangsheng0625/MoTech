@@ -5,11 +5,10 @@ import 'dart:math' as math;
 
 class FinancialAnalysisCard extends StatelessWidget {
   FinancialAnalysisCard({Key? key}) : super(key: key) {
-    // Initialize random data when the widget is created
     _generateRandomData();
   }
 
-  final List<PieChartSectionData> _pieData = [];
+  final List<BarChartGroupData> _barData = [];
   final _random = math.Random();
   final List<Color> _colors = [
     const Color(0xFF4318D1),
@@ -20,25 +19,23 @@ class FinancialAnalysisCard extends StatelessWidget {
   final List<String> _labels = ['Mr Tan', 'Maybank', 'Public Bank', 'Mr Chua'];
 
   void _generateRandomData() {
-    _pieData.clear();
+    _barData.clear();
     
-    // Generate random values that sum up to 100
+    // Generate random values between 0-100 for each category
     final values = List.generate(4, (index) => _random.nextDouble() * 100);
-    final total = values.reduce((a, b) => a + b);
     
     for (int i = 0; i < 4; i++) {
-      final value = (values[i] / total * 100).roundToDouble();
-      _pieData.add(
-        PieChartSectionData(
-          color: _colors[i],
-          value: value,
-          title: '${value.toStringAsFixed(1)}%',
-          radius: 100,
-          titleStyle: GoogleFonts.inter(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
+      _barData.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: values[i],
+              color: _colors[i],
+              width: 20,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ],
         ),
       );
     }
@@ -47,7 +44,6 @@ class FinancialAnalysisCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    // final isMediumScreen = screenWidth > 640;
 
     return Container(
       padding: EdgeInsets.all(screenWidth > 991 ? 24 : 16),
@@ -64,11 +60,8 @@ class FinancialAnalysisCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // _buildHeaderText(isMediumScreen),
           const SizedBox(height: 24),
-          _buildPieChart(),
-          const SizedBox(height: 16),
-          _buildLegend(),
+          _buildBarChart(),
           const SizedBox(height: 24),
           _buildPeriodSelector(),
         ],
@@ -76,71 +69,55 @@ class FinancialAnalysisCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPieChart() {
+  Widget _buildBarChart() {
     return AspectRatio(
-      aspectRatio: 1,
-      child: PieChart(
-        PieChartData(
-          sections: _pieData,
-          centerSpaceRadius: 40,
-          sectionsSpace: 4,
-          startDegreeOffset: -90,
-          borderData: FlBorderData(show: false),
-          pieTouchData: PieTouchData(
-            touchCallback: (FlTouchEvent event, pieTouchResponse) {
-              // Handle touch events if needed
-            },
+      aspectRatio: 1.5,
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          maxY: 100,
+          barGroups: _barData,
+          titlesData: FlTitlesData(
+            show: true,
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                getTitlesWidget: (value, meta) {
+                  return Text('${value.toInt()}%');
+                },
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  final index = value.toInt();
+                  if (index >= 0 && index < _labels.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        _labels[index],
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: const Color(0xFF334155),
+                        ),
+                      ),
+                    );
+                  }
+                  return const Text('');
+                },
+              ),
+            ),
+            rightTitles: const AxisTitles(),
+            topTitles: const AxisTitles(),
           ),
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
         ),
       ),
     );
   }
-
-  Widget _buildLegend() {
-    return Wrap(
-      spacing: 20,
-      runSpacing: 10,
-      children: List.generate(4, (index) => _buildLegendItem(index)),
-    );
-  }
-
-  Widget _buildLegendItem(int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: _colors[index],
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          _labels[index],
-          style: GoogleFonts.inter(
-            color: const Color(0xFF334155),
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Keep the existing header and period selector methods
-  // Widget _buildHeaderText(bool isMediumScreen) {
-  //   return Text(
-  //     'Crop Financial Analysis',
-  //     style: GoogleFonts.inter(
-  //       fontSize: isMediumScreen ? 20 : 18,
-  //       fontWeight: FontWeight.w700,
-  //       color: const Color(0xFF334155),
-  //     ),
-  //     textAlign: TextAlign.left,
-  //   );
-  // }
 
   Widget _buildPeriodSelector() {
     return Container(
