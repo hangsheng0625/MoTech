@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/components/navbar.dart';
+import '../earning/total_earning_screen.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -10,22 +11,56 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  // Example data: We'll start at January 2024
-  int currentMonth = 3; // Changed to March to match the image
+  int currentMonth = 3;
   int currentYear = 2024;
 
-  // Example "extra info" for certain days:
-  final Map<int, String> dayInfo = {
-    21: '\$250\nHealthy',
-    22: '\$180\nNeeds Water',
-    23: '\$180\nNeeds Water',
-    24: '\$320\nMixed',
+  // Expanded dummy data for day details
+  final Map<int, DayDetails> dayDetails = {
+    21: DayDetails(
+      temperature: 28.5,
+      soilMoisture: 65.3,
+      soilPH: 6.8,
+      soilNitrogen: 45.2,
+      cropHealth: 'Healthy',
+      earnings: 250.0,
+      waterNeed: 'Low',
+      weatherCondition: 'Sunny',
+    ),
+    22: DayDetails(
+      temperature: 26.7,
+      soilMoisture: 42.1,
+      soilPH: 6.5,
+      soilNitrogen: 38.9,
+      cropHealth: 'Needs Water',
+      earnings: 180.0,
+      waterNeed: 'High',
+      weatherCondition: 'Partly Cloudy',
+    ),
+    23: DayDetails(
+      temperature: 27.3,
+      soilMoisture: 40.5,
+      soilPH: 6.6,
+      soilNitrogen: 40.1,
+      cropHealth: 'Needs Water',
+      earnings: 180.0,
+      waterNeed: 'High',
+      weatherCondition: 'Cloudy',
+    ),
+    24: DayDetails(
+      temperature: 29.1,
+      soilMoisture: 55.7,
+      soilPH: 7.0,
+      soilNitrogen: 42.6,
+      cropHealth: 'Mixed',
+      earnings: 320.0,
+      waterNeed: 'Medium',
+      weatherCondition: 'Sunny',
+    ),
   };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -38,7 +73,6 @@ class _CalendarPageState extends State<CalendarPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            // Add this Container with white background and rounded corners
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -46,13 +80,8 @@ class _CalendarPageState extends State<CalendarPage> {
               ),
               child: Column(
                 children: [
-                  // Header with Month Navigation
                   _buildHeader(),
-
-                  // Day-of-week row
                   _buildDaysOfWeek(),
-
-                  // Calendar Grid
                   Expanded(
                     child: _buildCalendarGrid(),
                   ),
@@ -66,17 +95,14 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // 1) Header with "Calendar", navigation arrows, and month/year text
   Widget _buildHeader() {
-    // Get screen width to adjust layout
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 360; // Extra check for very small screens
+    final isSmallScreen = screenWidth < 360;
     
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         children: [
-          // Calendar title
           Text(
             'Calendar',
             style: GoogleFonts.inter(
@@ -86,20 +112,16 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           
-          // Flexible spacer to push navigation to the right
           const Spacer(),
           
-          // Month navigation and display - Now using flexible layout
           Row(
-            mainAxisSize: MainAxisSize.min, // Take only needed space
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Left arrow
               _NavigationButton(
                 icon: Icons.chevron_left,
                 onPressed: _goToPreviousMonth,
               ),
               
-              // Month/Year text with flexible padding
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: isSmallScreen ? 4 : 12,
@@ -114,7 +136,6 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
               
-              // Right arrow
               _NavigationButton(
                 icon: Icons.chevron_right,
                 onPressed: _goToNextMonth,
@@ -126,7 +147,6 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // 2) Row of day-of-week headers (Sun, Mon, Tue, etc.)
   Widget _buildDaysOfWeek() {
     final daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     final isSmallScreen = MediaQuery.of(context).size.width < 360;
@@ -155,34 +175,28 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // 3) Main calendar grid: each day is a CalendarCell
   Widget _buildCalendarGrid() {
     final daysInMonth = _getDaysInMonth(currentYear, currentMonth);
     final firstWeekday = DateTime(currentYear, currentMonth, 1).weekday; 
-    // Note: In Dart, Monday = 1, Sunday = 7
-
-    // Number of leading blank cells before day 1
-    // We want Sunday = 0, Monday = 1, etc.
     final leadingBlanks = (firstWeekday % 7);
 
-    // Build a list of day widgets (some are blank, some are real days)
     final cells = <Widget>[];
 
-    // 3A) Add blank cells
     for (int i = 0; i < leadingBlanks; i++) {
-      cells.add(const SizedBox()); // empty cell
+      cells.add(const SizedBox());
     }
 
-    // 3B) Add day cells
     for (int day = 1; day <= daysInMonth; day++) {
-      final extraInfo = dayInfo[day];
+      final extraInfo = dayDetails[day];
       cells.add(CalendarCell(
         day: day,
-        extraText: extraInfo,
+        extraText: extraInfo?.cropHealth,
+        onTap: extraInfo != null 
+          ? () => _showDayDetails(day, extraInfo) 
+          : null,
       ));
     }
 
-    // 3C) Build a GridView with 7 columns
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.count(
@@ -195,9 +209,22 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  // 4) Example home icon at the bottom
+  void _showDayDetails(int day, DayDetails details) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DayDetailsBottomSheet(
+        day: day,
+        month: _getMonthName(currentMonth),
+        year: currentYear,
+        details: details,
+      ),
+    );
+  }
 
-  // Logic: previous/next month
   void _goToPreviousMonth() {
     setState(() {
       currentMonth--;
@@ -220,24 +247,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
   String _getMonthName(int month) {
     const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
+      'January', 'February', 'March', 'April', 'May', 'June', 
+      'July', 'August', 'September', 'October', 'November', 'December'
     ];
     return monthNames[month - 1];
   }
 
   int _getDaysInMonth(int year, int month) {
-    // Handle February in leap years, etc.
     final firstOfNextMonth = (month == 12)
         ? DateTime(year + 1, 1, 1)
         : DateTime(year, month + 1, 1);
@@ -247,7 +263,6 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 }
 
-// A simple icon button with some styling
 class _NavigationButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
@@ -287,32 +302,38 @@ class _NavigationButton extends StatelessWidget {
   }
 }
 
-// The cell for each day in the grid
 class CalendarCell extends StatelessWidget {
   final int day;
   final String? extraText;
+  final VoidCallback? onTap;
 
   const CalendarCell({
     Key? key,
     required this.day,
     this.extraText,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width <= 640;
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFDCE1E6),
-        borderRadius: BorderRadius.circular(8),
+    
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: onTap != null 
+            ? const Color(0xFFDCE1E6) 
+            : Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: _buildDayContent(isSmallScreen),
       ),
-      padding: const EdgeInsets.all(8),
-      child: _buildDayContent(isSmallScreen),
     );
   }
 
   Widget _buildDayContent(bool isSmallScreen) {
-    // If day has extra text, we display it below the day number
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,7 +343,6 @@ class CalendarCell extends StatelessWidget {
             fontSize: isSmallScreen ? 12 : 14,
             color: const Color(0xFF334155),
           ),
-       
         ),
         if (extraText != null)
           Expanded(
@@ -337,6 +357,183 @@ class CalendarCell extends StatelessWidget {
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+class DayDetails {
+  final double temperature;
+  final double soilMoisture;
+  final double soilPH;
+  final double soilNitrogen;
+  final String cropHealth;
+  final double earnings;
+  final String waterNeed;
+  final String weatherCondition;
+
+  DayDetails({
+    required this.temperature,
+    required this.soilMoisture,
+    required this.soilPH,
+    required this.soilNitrogen,
+    required this.cropHealth,
+    required this.earnings,
+    required this.waterNeed,
+    required this.weatherCondition,
+  });
+}
+
+class DayDetailsBottomSheet extends StatelessWidget {
+  final int day;
+  final String month;
+  final int year;
+  final DayDetails details;
+
+  const DayDetailsBottomSheet({
+    Key? key,
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.details,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.9,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, controller) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: ListView(
+          controller: controller,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                '$month $day, $year',
+                style: GoogleFonts.inter(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            _buildDataSection(
+              title: 'Weather Information',
+              children: [
+                _buildDataRow('Temperature', '${details.temperature}°C'),
+                _buildDataRow('Weather', details.weatherCondition),
+              ],
+            ),
+
+            _buildDataSection(
+              title: 'Soil Conditions',
+              children: [
+                _buildDataRow('Moisture', '${details.soilMoisture}%'),
+                _buildDataRow('pH Level', details.soilPH.toStringAsFixed(1)),
+                _buildDataRow('Nitrogen', '${details.soilNitrogen} ppm'),
+                _buildDataRow('Water Need', details.waterNeed),
+              ],
+            ),
+
+            _buildDataSection(
+              title: 'Crop Health',
+              children: [
+                _buildDataRow('Status', details.cropHealth),
+              ],
+            ),
+
+            _buildDataSection(
+              title: 'Earnings',
+              children: [
+                _buildDataRow('Total Earnings', '\RM${details.earnings}'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const TotalEarningScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4B9B28),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      'View',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF4B9B28),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDataSection({
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        ...children,
+        const Divider(height: 1, color: Colors.grey),
       ],
     );
   }
